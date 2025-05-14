@@ -24,13 +24,11 @@ public class UpdateInventoryRoute extends RouteBuilder {
                 .doTry()
                 .bean(UpdateInventoryComponents.class,"prepareCurrentItem")
                 .to(String.format(ApplicationConstants.MONGO_ITEM_FIND_BY_UID,
-                        ApplicationConstants.MONGO_CONNECTION,
                         ApplicationConstants.MONGO_DATABASE,
                         ApplicationConstants.MONGO_ITEM_READ_COLLECTION))
                 .bean(UpdateInventoryComponents.class,"calculateStock")
                 .bean(UpdateInventoryComponents.class,"prepareUpdateQuery")
                 .to(String.format(ApplicationConstants.MONGO_ITEM_UPDATE,
-                        ApplicationConstants.MONGO_CONNECTION,
                         ApplicationConstants.MONGO_DATABASE,
                         ApplicationConstants.MONGO_ITEM_COLLECTION))
                 .bean(UpdateInventoryComponents.class,"handleSuccess")

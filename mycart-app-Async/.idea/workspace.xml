@@ -50,6 +50,10 @@
       <change beforePath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/route/InsertItemRoute.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/route/UpdateInventoryAsyncRoute.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/route/UpdateInventoryRoute.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mycart-app/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mycart-app/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mycart-app/src/main/java/com/mycart/mycart_app/constants/ApplicationConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/../mycart-app/src/main/java/com/mycart/mycart_app/constants/ApplicationConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mycart-app/src/main/java/com/mycart/mycart_app/route/UpdateInventoryRoute.java" beforeDir="false" afterPath="$PROJECT_DIR$/../mycart-app/src/main/java/com/mycart/mycart_app/route/UpdateInventoryRoute.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mycart-app/target/classes/com/mycart/mycart_app/route/UpdateInventoryRoute.class" beforeDir="false" afterPath="$PROJECT_DIR$/../mycart-app/target/classes/com/mycart/mycart_app/route/UpdateInventoryRoute.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,9 +96,9 @@
     "Maven.mycart-app [clean].executor": "Run",
     "Maven.mycart-app [install].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "<unknown>",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/290676/Desktop/req2-mycart/mycart-app-Async"
+    "last_opened_file_path": "C:/Users/290676/Desktop/local req2/mycart-app"
   }
 }]]></component>
   <component name="RecentsManager">

@@ -7,6 +7,7 @@
     <list default="true" id="f28b547f-ffd1-42e5-9704-081300553d4b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$" beforeDir="false" afterPath="$PROJECT_DIR$" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../mycart-app-Async" beforeDir="false" afterPath="$PROJECT_DIR$/../mycart-app-Async" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mycart-app-Async/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../mycart-app-Async/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/mycart/mycart_app/config/GlobalExceptionHandler.java" beforeDir="false" />
@@ -20,7 +21,6 @@
       <change beforePath="$PROJECT_DIR$/src/main/java/com/mycart/mycart_app/route/GetItemsByCategoryRoute.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mycart/mycart_app/route/GetItemsByCategoryRoute.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/mycart/mycart_app/route/InsertItemRoute.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mycart/mycart_app/route/InsertItemRoute.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/mycart/mycart_app/route/UpdateInventoryAsyncRoute.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/mycart/mycart_app/route/UpdateInventoryRoute.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/mycart/mycart_app/route/UpdateInventoryRoute.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/config/GlobalExceptionHandler.class" beforeDir="false" />
@@ -33,7 +33,6 @@
       <change beforePath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/route/GetItemsByCategoryRoute.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/route/GetItemsByCategoryRoute.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/route/InsertItemRoute.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/route/InsertItemRoute.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/route/UpdateInventoryAsyncRoute.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/route/UpdateInventoryAsyncRoute.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/route/UpdateInventoryRoute.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/mycart/mycart_app/route/UpdateInventoryRoute.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,9 +75,9 @@
     "Maven.mycart-app [clean].executor": "Run",
     "Maven.mycart-app [install].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "<unknown>",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/290676/Desktop/req2-mycart/mycart-app-Async"
+    "last_opened_file_path": "C:/Users/290676/Desktop/new-mycart/mycart-app"
   }
 }]]></component>
   <component name="RecentsManager">
