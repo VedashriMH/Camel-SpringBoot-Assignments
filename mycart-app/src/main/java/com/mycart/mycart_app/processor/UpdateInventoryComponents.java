@@ -14,9 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class UpdateInventoryComponents {
+public class UpdateInventoryComponents implements Processor{
 
-    public void validatePayload(Exchange exchange) {
+    @Override
+    public void process(Exchange exchange) {
         Map<String, Object> body = exchange.getIn().getBody(Map.class);
         Object itemsObj = body != null ? body.get("items") : null;
 

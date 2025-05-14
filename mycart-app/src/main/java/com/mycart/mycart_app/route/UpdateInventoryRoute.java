@@ -18,7 +18,7 @@ public class UpdateInventoryRoute extends RouteBuilder {
                 .errorHandler(noErrorHandler())
                 .doTry()
                 .unmarshal().json()
-                .bean(UpdateInventoryComponents.class,"validatePayload")
+                .process("updateInventoryComponents")
                 .split(simple("${exchangeProperty." + ApplicationConstants.PROPERTY_VALID_UPDATES + "}"))
                 .streaming()
                 .doTry()

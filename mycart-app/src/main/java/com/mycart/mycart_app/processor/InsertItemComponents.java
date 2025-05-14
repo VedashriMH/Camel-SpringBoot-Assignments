@@ -10,9 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class InsertItemComponents {
+public class InsertItemComponents implements Processor{
 
-    public void validatePayload(Exchange exchange) {
+    @Override
+    public void process(Exchange exchange) {
         Object body = exchange.getIn().getBody();
         if (!(body instanceof Map)) {
             throw new ItemInsertException("Invalid payload. Expected a JSON object.");
@@ -59,16 +60,9 @@ public class InsertItemComponents {
         exchange.getIn().setBody(item);
     }
 
-    public void errorResponse(Exchange exchange) {
-        Exception exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("error", exception.getMessage());
-        exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, "application/json");
-        exchange.getMessage().setBody(errorResponse);
-    }
-
     public void finalResponse(Exchange exchange) {
         exchange.getIn().setBody(Map.of("message", "Item inserted successfully."));
     }
+
 }
 

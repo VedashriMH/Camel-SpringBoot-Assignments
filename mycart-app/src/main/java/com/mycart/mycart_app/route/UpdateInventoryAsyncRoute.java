@@ -21,7 +21,7 @@ public class UpdateInventoryAsyncRoute extends RouteBuilder {
                 .routeId("route-inventory-update-rest")
                 .log("Received async inventory update request")
                 .setBody(simple("${body}"))
-                .to("activemq:queue:inventory.update.queue")
+                .to("activemq:queue:inventory.update.queue?exchangePattern=InOnly&deliveryMode=2")
                 .setBody(constant("Inventory update request accepted for async processing"))
                 .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(202));
 

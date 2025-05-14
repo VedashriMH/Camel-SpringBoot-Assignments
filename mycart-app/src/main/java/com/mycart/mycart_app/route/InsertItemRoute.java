@@ -19,8 +19,7 @@ public class InsertItemRoute extends RouteBuilder {
                 .errorHandler(noErrorHandler())
                 .doTry()
                 .unmarshal().json()
-                .bean(InsertItemComponents.class,"validatePayload")
-
+                .process("insertItemComponents")
                 // Validate if category exists
                 .to(String.format(ApplicationConstants.MONGO_CATEGORY_FIND_BY_ID,
                         ApplicationConstants.MONGO_DATABASE, ApplicationConstants.MONGO_CATEGORY_READ_COLLECTION))
@@ -36,10 +35,10 @@ public class InsertItemRoute extends RouteBuilder {
                 .to(String.format(ApplicationConstants.MONGO_ITEM_INSERT,
                         ApplicationConstants.MONGO_DATABASE, ApplicationConstants.MONGO_ITEM_COLLECTION))
 
-                .bean(InsertItemComponents.class,"finalResponse")
+                .bean(InsertItemComponents.class, "finalResponse")
 
                 .doCatch(Exception.class)
-                .bean(InsertItemComponents.class,"errorResponse")
+                .process("errorResponse")
                 .end()
                 .marshal().json();
 

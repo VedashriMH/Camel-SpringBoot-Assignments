@@ -16,7 +16,7 @@ public class UpdateInventoryConsumerRoute extends RouteBuilder {
         from("activemq:queue:inventory.update.queue?concurrentConsumers=5")
                 .routeId("route-inventory-update-consumer")
                 .unmarshal().json()
-                .bean(UpdateInventoryComponents.class,"validatePayload")
+                .process("updateInventoryComponents")
                 .split(simple("${exchangeProperty." + ApplicationConstants.PROPERTY_VALID_UPDATES + "}"))
                 .streaming()
                 .doTry()

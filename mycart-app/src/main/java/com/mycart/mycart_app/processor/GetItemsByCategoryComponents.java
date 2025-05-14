@@ -11,10 +11,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-public class GetItemsByCategoryComponents {
+public class GetItemsByCategoryComponents implements Processor {
 
-
-    public void itemProcessor(Exchange exchange) {
+    @Override
+    public void process(Exchange exchange) {
         String categoryId = exchange.getProperty("categoryId", String.class);
         String includeSpecial = exchange.getProperty("includeSpecial", "true", String.class);
         boolean filterSpecial = !Boolean.parseBoolean(includeSpecial);
@@ -44,16 +44,5 @@ public class GetItemsByCategoryComponents {
         exchange.getIn().setBody(response);
     }
 
-    public void errorResponseProcessor(Exchange exchange) {
-        Exception exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("error", exception.getMessage());
-        exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, "application/json");
-        exchange.getMessage().setBody(errorResponse);
-    }
-
-    public void finalResponseProcessor(Exchange exchange) {
-        exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, "application/json");
-    }
 }
 

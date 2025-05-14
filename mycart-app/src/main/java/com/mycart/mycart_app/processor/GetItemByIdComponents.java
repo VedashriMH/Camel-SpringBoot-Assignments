@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class GetItemByIdComponents {
+public class GetItemByIdComponents implements Processor{
 
-
-    public void itemProcessor(Exchange exchange) {
+    @Override
+    public void process(Exchange exchange) throws Exception {
         // The Mongo query result will already be set in the body
         Document item = exchange.getIn().getBody(Document.class);
 
@@ -25,16 +25,7 @@ public class GetItemByIdComponents {
         exchange.getIn().setBody(item);
     }
 
-    public void errorResponseProcessor(Exchange exchange) {
-        Exception exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("error", exception.getMessage());
-        exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, "application/json");
-        exchange.getMessage().setBody(errorResponse);
-    }
 
-    public void finalResponseProcessor(Exchange exchange) {
-        exchange.getMessage().setHeader(Exchange.CONTENT_TYPE, "application/json");
-    }
+
 }
 

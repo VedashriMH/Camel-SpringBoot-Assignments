@@ -23,11 +23,11 @@ public class GetItemByIdRoute extends RouteBuilder {
                 .to(String.format(ApplicationConstants.MONGO_ITEM_FIND_BY_ID,
                         ApplicationConstants.MONGO_DATABASE,
                         ApplicationConstants.MONGO_ITEM_READ_COLLECTION))
-                .bean(GetItemByIdComponents.class, "itemProcessor")
+                .process("getItemByIdComponents")
                 .doCatch(Exception.class)
-                .bean(GetItemByIdComponents.class,"errorResponseProcessor")
+                .process("errorResponse")
                 .doFinally()
-                .bean(GetItemByIdComponents.class,"finalResponseProcessor")
+                .process("finalResponse")
                 .end()
                 .marshal().json();
     }

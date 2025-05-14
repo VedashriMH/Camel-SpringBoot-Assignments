@@ -35,11 +35,11 @@ public class GetItemsByCategoryRoute extends RouteBuilder {
                 .setBody(header("allItems"))
 
                 // Filtering will happen here in the processor
-                .bean(GetItemsByCategoryComponents.class, "itemProcessor")
+                .process("getItemsByCategoryComponents")
                 .doCatch(Exception.class)
-                .bean(GetItemsByCategoryComponents.class,"errorResponseProcessor")
+                .process("errorResponse")
                 .doFinally()
-                .bean(GetItemsByCategoryComponents.class,"finalResponseProcessor")
+                .process("finalResponse")
                 .end()
                 .marshal().json();
 
