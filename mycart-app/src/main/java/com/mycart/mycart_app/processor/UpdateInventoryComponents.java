@@ -2,6 +2,8 @@ package com.mycart.mycart_app.processor;
 
 
 import com.mycart.mycart_app.constants.ApplicationConstants;
+import com.mycart.mycart_app.exception.ItemNotFoundException;
+import com.mycart.mycart_app.exception.StockUpdateException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.bson.Document;
@@ -14,9 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class UpdateInventoryComponents {
+public class UpdateInventoryComponents implements Processor{
 
-    public void validatePayload(Exchange exchange) {
+    @Override
+    public void process(Exchange exchange) {
         Map<String, Object> body = exchange.getIn().getBody(Map.class);
         Object itemsObj = body != null ? body.get("items") : null;
 
@@ -25,44 +28,71 @@ public class UpdateInventoryComponents {
         }
 
         List<Map<String, Object>> validUpdates = new ArrayList<>();
+        List<Map<String, Object>> failedUpdates = new ArrayList<>();
+
         for (Object obj : (List<?>) itemsObj) {
             if (obj instanceof Map<?, ?> item) {
-                String id = (String) item.get("_id");
-                Map<String, Object> stockDetails = (Map<String, Object>) item.get("stockDetails");
-                if (id == null || stockDetails == null) continue;
+                try {
+                    String id = (String) item.get("_id");
+                    Map<String, Object> stockDetails = (Map<String, Object>) item.get("stockDetails");
 
-                int soldOut = Integer.parseInt(stockDetails.get("soldOut").toString());
-                int damaged = Integer.parseInt(stockDetails.get("damaged").toString());
+                    if (id == null || stockDetails == null) {
+                        failedUpdates.add(Map.of(
+                                "_id", id != null ? id : "unknown",
+                                "status", "failed",
+                                "reason", "Missing _id or stockDetails."
+                        ));
+                        continue;
 
-                if (soldOut < 0 || damaged < 0) {
-                    throw new IllegalArgumentException("soldOut and damaged must be non-negative.");
+                    }
+
+
+                    int soldOut = Integer.parseInt(stockDetails.get("soldOut").toString());
+                    int damaged = Integer.parseInt(stockDetails.get("damaged").toString());
+
+                    if (soldOut < 0 || damaged < 0) {
+                        failedUpdates.add(Map.of(
+                                "_id", id,
+                                "status", "failed",
+                                "reason", "soldOut/damaged must be non-negative."
+                        ));
+                        continue;
+                    }
+
+                    validUpdates.add(Map.of("_id", id, "soldOut", soldOut, "damaged", damaged));
+
+                } catch (Exception e) {
+
+                    failedUpdates.add(Map.of(
+                            "Error", "Error processing item: " + e.getMessage()
+                    ));
+
                 }
-
-                validUpdates.add(Map.of("_id", id, "soldOut", soldOut, "damaged", damaged));
             }
         }
 
         if (validUpdates.isEmpty()) {
-            throw new IllegalArgumentException("No valid items found in payload.");
+            throw new StockUpdateException("No valid items found in payload.");
         }
 
         exchange.setProperty(ApplicationConstants.PROPERTY_VALID_UPDATES, validUpdates);
         exchange.setProperty("successfulUpdates", new java.util.ArrayList<String>());
-        exchange.setProperty("failedUpdates", new java.util.ArrayList<String>());
+        exchange.setProperty("failedUpdates", failedUpdates);
     }
+
 
     public void prepareCurrentItem(Exchange exchange) {
         Map<String, Object> currentItem = exchange.getIn().getBody(Map.class);
         exchange.setProperty(ApplicationConstants.PROPERTY_CURRENT_ITEM, currentItem);
-        exchange.getIn().setHeader("CamelMongoDbCriteria",
-                String.format("{ \"_id\": \"%s\" }", currentItem.get("_id")));
+        exchange.getIn().setBody(currentItem.get("_id"));
+
     }
 
     public void calculateStock(Exchange exchange) {
         Document itemDoc = exchange.getIn().getBody(Document.class);
 
         if (itemDoc == null) {
-            throw new IllegalArgumentException("Item not found or invalid.");
+            throw new ItemNotFoundException("Item not found or invalid.");
         }
         Map<String, Object> item = exchange.getProperty(ApplicationConstants.PROPERTY_CURRENT_ITEM, Map.class);
 
@@ -73,7 +103,7 @@ public class UpdateInventoryComponents {
         int available = stock.getInteger("availableStock", 0);
         int newStock = available - soldOut - damaged;
 
-        if (newStock < 0) throw new IllegalStateException("Stock would go below zero.");
+        if (newStock < 0) throw new StockUpdateException("Stock would go below zero.");
 
         exchange.setProperty("newAvailableStock", newStock);
     }

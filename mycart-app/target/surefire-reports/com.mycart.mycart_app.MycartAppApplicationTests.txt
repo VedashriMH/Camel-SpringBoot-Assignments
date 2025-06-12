@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.mycart.mycart_app.MycartAppApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.373 s -- in com.mycart.mycart_app.MycartAppApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.767 s -- in com.mycart.mycart_app.MycartAppApplicationTests

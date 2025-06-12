@@ -2,67 +2,44 @@ package com.mycart.mycart_inventory_consumer.processor;
 
 
 import com.mycart.mycart_inventory_consumer.constants.ApplicationConstants;
+import com.mycart.mycart_inventory_consumer.exception.ItemNotFoundException;
+import com.mycart.mycart_inventory_consumer.exception.StockUpdateException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.bson.Document;
 import org.springframework.stereotype.Component;
 
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
 public class UpdateInventoryComponents {
 
-    public void validatePayload(Exchange exchange) {
-        Map<String, Object> body = exchange.getIn().getBody(Map.class);
-        Object itemsObj = body != null ? body.get("items") : null;
 
-        if (!(itemsObj instanceof List<?>)) {
-            throw new IllegalArgumentException("'items' field must be a list.");
+    public void validateSingleItem(Exchange exchange) {
+        Map<String, Object> item = exchange.getIn().getBody(Map.class);
+        if (item == null || item.get("_id") == null || item.get("soldOut") == null || item.get("damaged") == null) {
+            throw new IllegalArgumentException("Missing required fields in item.");
         }
-
-        List<Map<String, Object>> validUpdates = new ArrayList<>();
-        for (Object obj : (List<?>) itemsObj) {
-            if (obj instanceof Map<?, ?> item) {
-                String id = (String) item.get("_id");
-                Map<String, Object> stockDetails = (Map<String, Object>) item.get("stockDetails");
-                if (id == null || stockDetails == null) continue;
-
-                int soldOut = Integer.parseInt(stockDetails.get("soldOut").toString());
-                int damaged = Integer.parseInt(stockDetails.get("damaged").toString());
-
-                if (soldOut < 0 || damaged < 0) {
-                    throw new IllegalArgumentException("soldOut and damaged must be non-negative.");
-                }
-
-                validUpdates.add(Map.of("_id", id, "soldOut", soldOut, "damaged", damaged));
-            }
-        }
-
-        if (validUpdates.isEmpty()) {
-            throw new IllegalArgumentException("No valid items found in payload.");
-        }
-
-        exchange.setProperty(ApplicationConstants.PROPERTY_VALID_UPDATES, validUpdates);
-        exchange.setProperty("successfulUpdates", new java.util.ArrayList<String>());
-        exchange.setProperty("failedUpdates", new java.util.ArrayList<String>());
     }
+
 
     public void prepareCurrentItem(Exchange exchange) {
         Map<String, Object> currentItem = exchange.getIn().getBody(Map.class);
         exchange.setProperty(ApplicationConstants.PROPERTY_CURRENT_ITEM, currentItem);
+        exchange.getIn().setHeader("itemId", currentItem.get("_id"));
         exchange.getIn().setHeader("CamelMongoDbCriteria",
                 String.format("{ \"_id\": \"%s\" }", currentItem.get("_id")));
     }
+
+
 
     public void calculateStock(Exchange exchange) {
         Document itemDoc = exchange.getIn().getBody(Document.class);
 
         if (itemDoc == null) {
-            throw new IllegalArgumentException("Item not found or invalid.");
+            throw new ItemNotFoundException("Item not found or invalid.");
         }
         Map<String, Object> item = exchange.getProperty(ApplicationConstants.PROPERTY_CURRENT_ITEM, Map.class);
 
@@ -73,10 +50,11 @@ public class UpdateInventoryComponents {
         int available = stock.getInteger("availableStock", 0);
         int newStock = available - soldOut - damaged;
 
-        if (newStock < 0) throw new IllegalStateException("Stock would go below zero.");
+        if (newStock < 0) throw new StockUpdateException("Stock would go below zero.");
 
         exchange.setProperty("newAvailableStock", newStock);
     }
+
 
     public void prepareUpdateQuery(Exchange exchange) {
         Map<String, Object> currentItem = exchange.getProperty(ApplicationConstants.PROPERTY_CURRENT_ITEM, Map.class);
@@ -91,61 +69,18 @@ public class UpdateInventoryComponents {
         exchange.getIn().setBody(itemDoc);
     }
 
-    public void handleSuccess(Exchange exchange) {
-        List<Map<String, Object>> success = exchange.getProperty("successfulUpdates", List.class);
-        if (success == null) success = new ArrayList<>();
-        Map<String, Object> item = exchange.getProperty(ApplicationConstants.PROPERTY_CURRENT_ITEM, Map.class);
-        success.add(Map.of("_id", item.get("_id"), "status", "success"));
-        exchange.setProperty("successfulUpdates", success);
-    }
-
     public void handleFailure(Exchange exchange) {
-        List<Map<String, Object>> failed = exchange.getProperty("failedUpdates", List.class);
-        if (failed == null) failed = new ArrayList<>();
         Map<String, Object> item = exchange.getProperty(ApplicationConstants.PROPERTY_CURRENT_ITEM, Map.class);
         Exception ex = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Exception.class);
 
-        failed.add(Map.of(
-                "_id", item != null ? item.getOrDefault("_id", "unknown") : "unknown",
-                "status", "failed",
-                "reason", ex != null ? ex.getMessage() : "Unknown error"
-        ));
+        System.err.println("Failed to update item ID: " +
+                (item != null ? item.get("_id") : "unknown") +
+                " | Reason: " + (ex != null ? ex.getMessage() : "Unknown error"));
 
-        exchange.setProperty("failedUpdates", failed);
-        exchange.getIn().removeHeader(Exchange.EXCEPTION_CAUGHT);
+
     }
 
-    public void buildFinalResponse(Exchange exchange) {
-        Map<String, Object> response = new HashMap<>();
-        List<Map<String, Object>> success = exchange.getProperty("successfulUpdates", List.class);
-        List<Map<String, Object>> failed = exchange.getProperty("failedUpdates", List.class);
-        response.put("successfulUpdates", success != null ? success : List.of());
-        response.put("failedUpdates", failed != null ? failed : List.of());
 
-        exchange.getMessage().setBody(response);
-        exchange.getMessage().setHeader(Exchange.HTTP_RESPONSE_CODE,
-                (success == null || success.isEmpty()) ? 400 :
-                        (failed != null && !failed.isEmpty()) ? 207 : 202);
-    }
-
-    public void logSummary(Exchange exchange) {
-        List<Map<String, Object>> successful = exchange.getProperty("successfulUpdates", List.class);
-        List<Map<String, Object>> failed = exchange.getProperty("failedUpdates", List.class);
-
-        StringBuilder successLog = new StringBuilder("\n✅ Inventory Update - Success List:\n");
-        for (Map<String, Object> item : successful) {
-            successLog.append("  - ID: ").append(item.get("_id")).append("\n");
-        }
-
-        StringBuilder failedLog = new StringBuilder("\n❌ Inventory Update - Failure List:\n");
-        for (Map<String, Object> item : failed) {
-            failedLog.append("  - ID: ").append(item.get("_id"))
-                    .append(" | Reason: ").append(item.get("reason")).append("\n");
-        }
-
-        System.out.println(successLog);
-        System.out.println(failedLog);
-    }
 }
 
 

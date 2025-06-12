@@ -17,7 +17,6 @@ public class ApplicationConstants {
     public static final String MONGO_ITEM_FIND_BY_UID = "mongodb:%s?database=%s&collection=%s&operation=findOneByQuery&dynamicity=true";
     public static final String MONGO_ITEM_UPDATE = "mongodb:%s?database=%s&collection=%s&operation=save&dynamicity=true";
 
-    public static final String PROPERTY_VALID_UPDATES = "validUpdates";
     public static final String PROPERTY_CURRENT_ITEM = "currentItem";
 
 

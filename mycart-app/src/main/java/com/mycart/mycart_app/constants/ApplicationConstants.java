@@ -16,12 +16,16 @@ public class ApplicationConstants {
     public static final String MONGO_CATEGORY_READ_COLLECTION = "category";
 
     // Mongo Queries
-    public static final String MONGO_ITEM_FIND_BY_ID = "mongodb:{{mongo.connection}}?database=%s&collection=%s&operation=findById&dynamicity=true";
+    public static final String MONGO_ITEM_FIND_BY_ID =
+            "mongodb:{{mongo.connection}}"
+                    + "?database=%s"
+                    + "&collection=%s"
+                    + "&operation=findById";
     public static final String MONGO_CATEGORY_FIND_BY_ID = "mongodb:{{mongo.connection}}?database=%s&collection=%s&operation=findById&dynamicity=true";
     public static final String MONGO_ITEM_FIND_ALL = "mongodb:{{mongo.connection}}?database=%s&collection=%s&operation=findAll&dynamicity=true";
     public static final String MONGO_ITEM_INSERT = "mongodb:{{mongo.connection}}?database=%s&collection=%s&operation=insert&dynamicity=true";
-    public static final String MONGO_ITEM_FIND_BY_UID = "mongodb:{{mongo.connection}}?database=%s&collection=%s&operation=findOneByQuery&dynamicity=true";
     public static final String MONGO_ITEM_UPDATE = "mongodb:{{mongo.connection}}?database=%s&collection=%s&operation=save&dynamicity=true";
+    public static final String MONGO_ITEM_FIND_WITH_QUERY = "mongodb:{{mongo.connection}}?database=%s&collection=%s&operation=findAll&dynamicity=true";
 
 
     // Direct Endpoints
