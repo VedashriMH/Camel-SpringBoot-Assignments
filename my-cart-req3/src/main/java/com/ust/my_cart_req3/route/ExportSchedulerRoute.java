@@ -21,7 +21,7 @@ public class ExportSchedulerRoute extends RouteBuilder {
                 .handled(true);
 
         // Main route
-        from("timer://itemExportTimer?fixedRate=true&period=60000")
+        from("quartz://itemExportTimer?cron=0+0/1+*+*+*+?")
                 .routeId(ApplicationConstants.ITEM_EXPORT_SCHEDULER_ROUTE)
                 .log("Scheduler triggered at ${date:now:yyyy-MM-dd'T'HH:mm:ss.SSSZ}")
                 .setHeader(ApplicationConstants.MONGO_COLLECTION_HEADER, simple(ApplicationConstants.CONTROL_REF_COLLECTION))
