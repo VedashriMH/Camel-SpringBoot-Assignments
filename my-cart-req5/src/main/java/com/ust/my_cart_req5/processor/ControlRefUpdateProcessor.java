@@ -18,13 +18,13 @@ public class ControlRefUpdateProcessor implements Processor {
         Map<String, Object> controlRefUpdate = new HashMap<>();
         String key = exchange.getContext().resolvePropertyPlaceholders(ApplicationConstants.CONTROL_REF_KEY);
         controlRefUpdate.put("_id", key);
-        String latestUpdateDate = exchange.getProperty(ApplicationConstants.FINAL_LATEST_UPDATE_DATE_PROPERTY, String.class);
-        if (latestUpdateDate == null) {
-            logger.warn("No latestUpdateDate found; using last processed timestamp.");
-            latestUpdateDate = exchange.getIn().getHeader(ApplicationConstants.LAST_PROCESSED_TS_HEADER, String.class);
+        String routeStartTimestamp = exchange.getProperty(ApplicationConstants.ROUTE_START_TIMESTAMP, String.class);
+        if (routeStartTimestamp == null) {
+            logger.warn("No route start timestamp found; using last processed timestamp as fallback.");
+            routeStartTimestamp = exchange.getIn().getHeader(ApplicationConstants.LAST_PROCESSED_TS_HEADER, String.class);
         }
-        controlRefUpdate.put("lastProcessTs", latestUpdateDate);
+        controlRefUpdate.put("lastProcessTs", routeStartTimestamp);
         exchange.getIn().setBody(new Document(controlRefUpdate));
-        logger.info("Control ref update: {}", exchange.getIn().getBody());
+        logger.info("Control ref update with route start timestamp: {}", exchange.getIn().getBody());
     }
 }

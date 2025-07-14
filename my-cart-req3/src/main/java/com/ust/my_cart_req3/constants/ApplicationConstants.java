@@ -21,6 +21,7 @@ public final class ApplicationConstants {
     public static final String MONGO_COLLECTION_HEADER = "MongoCollection";
     public static final String ITEMS_FOUND_HEADER = "itemsFound";
     public static final String LAST_PROCESSED_TS_HEADER = "lastProcessedTs";
+    public static final String ROUTE_START_TIMESTAMP = "routeStartTimestamp";
     public static final String LATEST_UPDATE_DATE_PROPERTY = "latestUpdateDate";
     public static final String FINAL_LATEST_UPDATE_DATE_PROPERTY = "finalLatestUpdateDate";
 
@@ -33,6 +34,7 @@ public final class ApplicationConstants {
     public static final String REVIEW_AGGREGATOR_ROUTE = "review-aggregator-route";
     public static final String STOREFRONT_APP_ROUTE = "storefront-app-route";
     public static final String CATEGORY_LOOKUP_ROUTE = "category-lookup-route";
+
 
     // File suffixes
     public static final String TREND_FILE_SUFFIX = "_trend.xml";

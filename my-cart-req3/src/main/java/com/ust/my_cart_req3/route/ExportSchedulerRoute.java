@@ -6,6 +6,9 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.converter.jaxb.JaxbDataFormat;
 import org.springframework.stereotype.Component;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Component
 public class ExportSchedulerRoute extends RouteBuilder {
 
@@ -23,7 +26,8 @@ public class ExportSchedulerRoute extends RouteBuilder {
         // Main route
         from("quartz://itemExportTimer?cron=0+0/1+*+*+*+?")
                 .routeId(ApplicationConstants.ITEM_EXPORT_SCHEDULER_ROUTE)
-                .log("Scheduler triggered at ${date:now:yyyy-MM-dd'T'HH:mm:ss.SSSZ}")
+                .setProperty(ApplicationConstants.ROUTE_START_TIMESTAMP, simple("${date:now:yyyy-MM-dd'T'HH:mm:ss.SSSZ}"))
+                .log("Scheduler triggered prune at ${date:now:yyyy-MM-dd'T'HH:mm:ss.SSSZ}")
                 .setHeader(ApplicationConstants.MONGO_COLLECTION_HEADER, simple(ApplicationConstants.CONTROL_REF_COLLECTION))
                 .process(new ControlRefQueryProcessor())
                 .to("mongodb:" + ApplicationConstants.MONGODB_CONNECTION_BEAN + "?database=" + ApplicationConstants.MONGODB_DATABASE + "&collection=" + ApplicationConstants.CONTROL_REF_COLLECTION + "&operation=findOneByQuery")
@@ -35,9 +39,7 @@ public class ExportSchedulerRoute extends RouteBuilder {
                 .process(new ItemsValidationProcessor())
                 .choice()
                 .when(header(ApplicationConstants.ITEMS_FOUND_HEADER).isEqualTo(true))
-                .process(new LatestTimestampCaptureProcessor())
                 .split(body())
-                .aggregationStrategy(new LatestTimestampAggregationStrategy())
                 .parallelProcessing()
                 .log("Processing item with ID: ${body[_id]}")
                 .process(new ItemHeaderProcessor())
@@ -63,8 +65,8 @@ public class ExportSchedulerRoute extends RouteBuilder {
         from("direct:categoryLookup")
                 .routeId(ApplicationConstants.CATEGORY_LOOKUP_ROUTE)
                 .process(new CategoryLookupProcessor())
-                .to("mongodb:" + ApplicationConstants.MONGODB_CONNECTION_BEAN + "?database=" + ApplicationConstants.MONGODB_DATABASE + "&collection=" + ApplicationConstants.CATEGORIES_COLLECTION + "&operation=findOneByQuery")
-                .log("Fetched category document: ${body}");
+                .to("mongodb:" + ApplicationConstants.MONGODB_CONNECTION_BEAN + "?database=" + ApplicationConstants.MONGODB_DATABASE + "&collection=" + ApplicationConstants.CATEGORIES_COLLECTION + "&operation=findOneByQuery");
+
 
         // Trend Analyzer route
         from("direct:trendFormat")

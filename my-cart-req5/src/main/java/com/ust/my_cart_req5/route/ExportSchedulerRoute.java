@@ -19,11 +19,13 @@ public class ExportSchedulerRoute extends RouteBuilder {
         onException(Exception.class)
                 .log("Error occurred: ${exception.message}")
                 .handled(true);
+        
 
         // Main route
         from("quartz://itemExportTimer?cron=0+0/1+*+*+*+?")
                 .routeId(ApplicationConstants.ITEM_EXPORT_SCHEDULER_ROUTE)
-                .log("Scheduler triggered at ${date:now:yyyy-MM-dd'T'HH:mm:ss.SSSZ}")
+                .setProperty(ApplicationConstants.ROUTE_START_TIMESTAMP, simple("${date:now:yyyy-MM-dd'T'HH:mm:ss.SSSZ}"))
+                .log("Scheduler triggered prune at ${date:now:yyyy-MM-dd'T'HH:mm:ss.SSSZ}")
                 .setHeader(ApplicationConstants.MONGO_COLLECTION_HEADER, simple(ApplicationConstants.CONTROL_REF_COLLECTION))
                 .process(new ControlRefQueryProcessor())
                 .to("mongodb:" + ApplicationConstants.MONGODB_CONNECTION_BEAN + "?database=" + ApplicationConstants.MONGODB_DATABASE + "&collection=" + ApplicationConstants.CONTROL_REF_COLLECTION + "&operation=findOneByQuery")
@@ -35,9 +37,7 @@ public class ExportSchedulerRoute extends RouteBuilder {
                 .process(new ItemsValidationProcessor())
                 .choice()
                 .when(header(ApplicationConstants.ITEMS_FOUND_HEADER).isEqualTo(true))
-                .process(new LatestTimestampCaptureProcessor())
                 .split(body())
-                .aggregationStrategy(new LatestTimestampAggregationStrategy())
                 .parallelProcessing()
                 .log("Processing item with ID: ${body[_id]}")
                 .process(new ItemHeaderProcessor())
@@ -46,7 +46,7 @@ public class ExportSchedulerRoute extends RouteBuilder {
                     return original;
                 })
                 .process(new CategoryEnrichmentProcessor())
-                .throttle(5).timePeriodMillis(60000) // Limit to 100 records per minute
+                .throttle(5).timePeriodMillis(60000).asyncDelayed()
                 .multicast().parallelProcessing()
                 .to("direct:trendFormat", "direct:reviewFormat", "direct:storefrontFormat")
                 .end()
