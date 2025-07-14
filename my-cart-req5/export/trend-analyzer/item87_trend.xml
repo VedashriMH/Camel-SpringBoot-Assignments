@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<inventory>
+    <category id="cat5">
+        <categoryName name="Outdoor Gear"/>
+        <items>
+            <itemId>item87</itemId>
+            <categoryId>cat5</categoryId>
+            <availableStock>199</availableStock>
+            <sellingPrice>574</sellingPrice>
+        </items>
+    </category>
+</inventory>

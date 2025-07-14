@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<inventory>
+    <category id="cat1">
+        <categoryName name="Car Equipment"/>
+        <items>
+            <itemId>item97</itemId>
+            <categoryId>cat1</categoryId>
+            <availableStock>771</availableStock>
+            <sellingPrice>289</sellingPrice>
+        </items>
+    </category>
+</inventory>

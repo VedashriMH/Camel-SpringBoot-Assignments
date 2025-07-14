@@ -1,23 +1,42 @@
 package com.ust.my_cart_req4.route;
 
 
+import com.ust.my_cart_req4.ErrorResponseProcessor;
 import org.apache.camel.Exchange;
+import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.http.base.HttpOperationFailedException;
+import org.apache.camel.model.dataformat.JsonLibrary;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MyCartStoreRoute extends RouteBuilder {
 
+    @Value("${http.retry.max}")
+    private int httpRetryMax;
+
+    @Value("${http.retry.delay}")
+    private long httpRetryDelay;
+
+    @Value("${http.retry.backoff}")
+    private double httpRetryBackoff;
+
     @Override
     public void configure() {
 
-        onException(HttpOperationFailedException.class)
+
+        onException(org.apache.hc.client5.http.HttpHostConnectException.class)
+                .maximumRedeliveries(httpRetryMax)
+                .redeliveryDelay(httpRetryDelay)
+                .backOffMultiplier(httpRetryBackoff)
+                .useExponentialBackOff()
+                .retryAttemptedLogLevel(LoggingLevel.WARN)
+                .log(LoggingLevel.ERROR, "HTTP connection refused: ${exception.message}")
                 .handled(true)
-                .log("Failed to get item: ${exception.message}")
-                .setBody(constant("Item service error occurred"))
-                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500))
-                .end();
+//                .process(new ErrorResponseProcessor())
+                .marshal().json(JsonLibrary.Jackson);
+
 
         restConfiguration()
                 .component("netty-http")

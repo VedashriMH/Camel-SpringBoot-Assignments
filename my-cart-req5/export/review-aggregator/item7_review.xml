@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reviews>
+    <items id="item7">
+        <reviews>
+            <reviewrating>5</reviewrating>
+            <reviewcomment>Great sound quality</reviewcomment>
+        </reviews>
+        <reviews>
+            <reviewrating>4</reviewrating>
+            <reviewcomment>Battery life is decent</reviewcomment>
+        </reviews>
+    </items>
+</reviews>

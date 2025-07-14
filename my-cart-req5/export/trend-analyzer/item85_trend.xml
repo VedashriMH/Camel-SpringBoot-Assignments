@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<inventory>
+    <category id="cat4">
+        <categoryName name="Office Essentials"/>
+        <items>
+            <itemId>item85</itemId>
+            <categoryId>cat4</categoryId>
+            <availableStock>394</availableStock>
+            <sellingPrice>517</sellingPrice>
+        </items>
+    </category>
+</inventory>

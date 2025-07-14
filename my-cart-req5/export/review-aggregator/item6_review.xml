@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reviews>
+    <items id="item6">
+        <reviews>
+            <reviewrating>4</reviewrating>
+            <reviewcomment>Comfortable grip</reviewcomment>
+        </reviews>
+        <reviews>
+            <reviewrating>3</reviewrating>
+            <reviewcomment>Slips occasionally</reviewcomment>
+        </reviews>
+    </items>
+</reviews>

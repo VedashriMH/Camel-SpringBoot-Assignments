@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<inventory>
+    <category id="cat3">
+        <categoryName name="Mobile Gadgets"/>
+        <items>
+            <itemId>item80</itemId>
+            <categoryId>cat3</categoryId>
+            <availableStock>567</availableStock>
+            <sellingPrice>381</sellingPrice>
+        </items>
+    </category>
+</inventory>

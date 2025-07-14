@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reviews>
+    <items id="item3">
+        <reviews>
+            <reviewrating>5</reviewrating>
+            <reviewcomment>Fast charging</reviewcomment>
+        </reviews>
+        <reviews>
+            <reviewrating>4</reviewrating>
+            <reviewcomment>Works well but cable is short</reviewcomment>
+        </reviews>
+    </items>
+</reviews>

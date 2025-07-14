@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reviews>
+    <items id="item4">
+        <reviews>
+            <reviewrating>5</reviewrating>
+            <reviewcomment>Spacious and sturdy</reviewcomment>
+        </reviews>
+        <reviews>
+            <reviewrating>4</reviewrating>
+            <reviewcomment>Great for family camping</reviewcomment>
+        </reviews>
+        <reviews>
+            <reviewrating>4</reviewrating>
+            <reviewcomment>Setup takes time</reviewcomment>
+        </reviews>
+    </items>
+</reviews>

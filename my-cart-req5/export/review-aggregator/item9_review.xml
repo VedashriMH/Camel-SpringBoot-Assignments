@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<reviews>
+    <items id="item9">
+        <reviews>
+            <reviewrating>5</reviewrating>
+            <reviewcomment>Comfortable and durable</reviewcomment>
+        </reviews>
+        <reviews>
+            <reviewrating>4</reviewrating>
+            <reviewcomment>Good storage</reviewcomment>
+        </reviews>
+    </items>
+</reviews>
