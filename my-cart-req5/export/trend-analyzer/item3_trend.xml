@@ -5,7 +5,7 @@
         <items>
             <itemId>item3</itemId>
             <categoryId>cat3</categoryId>
-            <availableStock>69</availableStock>
+            <availableStock>27</availableStock>
             <sellingPrice>129</sellingPrice>
         </items>
     </category>

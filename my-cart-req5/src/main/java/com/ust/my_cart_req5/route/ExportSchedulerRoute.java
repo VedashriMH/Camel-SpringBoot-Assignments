@@ -19,13 +19,13 @@ public class ExportSchedulerRoute extends RouteBuilder {
         onException(Exception.class)
                 .log("Error occurred: ${exception.message}")
                 .handled(true);
-        
+
 
         // Main route
-        from("quartz://itemExportTimer?cron=0+0/1+*+*+*+?")
+        from("quartz://itemExportTimer?cron=0+0/2+*+*+*+?")
                 .routeId(ApplicationConstants.ITEM_EXPORT_SCHEDULER_ROUTE)
                 .setProperty(ApplicationConstants.ROUTE_START_TIMESTAMP, simple("${date:now:yyyy-MM-dd'T'HH:mm:ss.SSSZ}"))
-                .log("Scheduler triggered prune at ${date:now:yyyy-MM-dd'T'HH:mm:ss.SSSZ}")
+                .log("Scheduler triggered at ${date:now:yyyy-MM-dd'T'HH:mm:ss.SSSZ}")
                 .setHeader(ApplicationConstants.MONGO_COLLECTION_HEADER, simple(ApplicationConstants.CONTROL_REF_COLLECTION))
                 .process(new ControlRefQueryProcessor())
                 .to("mongodb:" + ApplicationConstants.MONGODB_CONNECTION_BEAN + "?database=" + ApplicationConstants.MONGODB_DATABASE + "&collection=" + ApplicationConstants.CONTROL_REF_COLLECTION + "&operation=findOneByQuery")
@@ -37,7 +37,7 @@ public class ExportSchedulerRoute extends RouteBuilder {
                 .process(new ItemsValidationProcessor())
                 .choice()
                 .when(header(ApplicationConstants.ITEMS_FOUND_HEADER).isEqualTo(true))
-                .split(body())
+                .split(body()).stopOnException()
                 .parallelProcessing()
                 .log("Processing item with ID: ${body[_id]}")
                 .process(new ItemHeaderProcessor())
@@ -46,18 +46,18 @@ public class ExportSchedulerRoute extends RouteBuilder {
                     return original;
                 })
                 .process(new CategoryEnrichmentProcessor())
-                .throttle(5).timePeriodMillis(60000).asyncDelayed()
+                .throttle(5).timePeriodMillis(30000) // Limit to 5 records per minute
                 .multicast().parallelProcessing()
                 .to("direct:trendFormat", "direct:reviewFormat", "direct:storefrontFormat")
                 .end()
                 .end()
+                .endChoice()
+                .otherwise()
+                .log("No items found for processing.")
+                .end()
                 .process(new ControlRefUpdateProcessor())
                 .setHeader(ApplicationConstants.MONGO_COLLECTION_HEADER, simple(ApplicationConstants.CONTROL_REF_COLLECTION))
                 .to("mongodb:" + ApplicationConstants.MONGODB_CONNECTION_BEAN + "?database=" + ApplicationConstants.MONGODB_DATABASE + "&collection=" + ApplicationConstants.CONTROL_REF_COLLECTION + "&operation=save")
-                .endChoice()
-                .otherwise()
-                .log("No items found; skipping update.")
-                .end()
                 .log("Item export complete at ${date:now:yyyy-MM-dd'T'HH:mm:ss.SSSZ}");
 
         // Category Lookup route

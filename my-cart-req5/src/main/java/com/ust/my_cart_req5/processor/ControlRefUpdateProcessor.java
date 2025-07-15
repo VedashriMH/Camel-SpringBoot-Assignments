@@ -25,6 +25,6 @@ public class ControlRefUpdateProcessor implements Processor {
         }
         controlRefUpdate.put("lastProcessTs", routeStartTimestamp);
         exchange.getIn().setBody(new Document(controlRefUpdate));
-        logger.info("Control ref update with route start timestamp: {}", exchange.getIn().getBody());
+        logger.info("Updating control_ref with timestamp: {}", routeStartTimestamp);
     }
 }
